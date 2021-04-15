@@ -9,9 +9,8 @@ Required Packages
 - Vuex
 
 ### Features
-- Notifications with timers that can be configured per queue or per notification
-- Styleable via css or classes
-- Multiple notification Queues
-- Dynamic or Static notifications (For toast style and bell/counter style notifications)
-- Advanced queue options like "Dessimate", "Remove Early", "Remove Oldest", "Remove Youngest", "Extend"
-- Queues accessible via Vuex store (this.$store) and your own methods or via the Notifaye plugin with it's provided methods(this.$notifaye).
+- Add and Manage Blog Posts
+- Tag posts with "badge style tags"
+- Categorize posts
+- Filter posts by tag, user, date range, category
+- Manage users

@@ -2,7 +2,6 @@
 
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { notifayeStore } from '@/notifications'
 
 Vue.use(Vuex);
 
@@ -13,27 +12,23 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   modules: {
-    notifaye: notifayeStore
   },
   state: {
     app_settings: {
-      name: 'Template Application'
+      name: 'BennyMakes a Blog',
+      theme: 'dark'
     }
   },
   mutations: {
 
   },
   actions: {
-    add_notey (context){
-      return new Promise((resolve, reject) => {
-
-        Vue.prototype.$notifaye.add('Something');
-
-      });
-    },
-
 
   },
-  getters: {}
+  getters: {
+    theme: state => {
+      return state.app_settings.theme;
+    }
+  }
 
 });

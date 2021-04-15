@@ -1,30 +1,23 @@
 <template>
   <div class="">
-    <h1>Home</h1>
-    <div style="margin-bottom: 1rem;">
-      <h1>Queues</h1>
-      <input type="text" v-model="newQueueName" placeholder="Queue Name"/>
-      <button @click="new_queue">New Queue</button>
+    <div class="" v-if="!anyArticles">
+      <h2>No articles have been written yet. :-(</h2>
     </div>
-    <div style="margin-bottom: 1rem;">
-      <h1>Notes</h1>
-      <input type="text" v-model="notificationTitle" placeholder="Notification Title"/>
-      <input type="text" v-model="notificationContent" placeholder="Content"/>
-      <input type="checkbox" v-model="notificationStatic"/>
-      <input type="text" v-model="notificationTimeout" placeholder="Timeout"/>
-      <button @click="add_note">Add Note</button>
+    <div class="" v-if="anyArticles">
+      <div v-for="(article, index) in articles" :class="['article', theme]" :key="articles._id">
+        <div class="tags">
+          <div v-for="(tag, tagIndex) in article.tags" class="tag">{{tag.title}}</div>
+        </div>
+        <div class="title">{{article.title}}</div>
+        <div class="creators">
+          <div v-for="(author, creatorIndex) in article.authors" class="creator">
+            <div class="user-image"></div>
+            <div class="user-name">{{author.username}}</div>
+          </div>
+        </div>
+        <div class="content" v-html="article.content"></div>
+      </div>
     </div>
-    <div>
-      <h1>Actions</h1>
-      <select v-model="selectedQueue" @change="changeList">
-        <option v-for="queue in queues" :value="queue.queueName">{{queue.title}}</option>
-      </select>
-      <button @click="dessimate">Dessimate</button>
-      <button @click="listTheQueues">List Queues</button>
-      <button @click="removeNewest">Delete Newest</button>
-      <button @click="removeOldest">Delete Oldest</button>
-    </div>
-
   </div>
 </template>
 
@@ -35,60 +28,63 @@ export default {
   name: 'home',
   data: function(){
     return {
-      waitStatus: 'Ready',
-      newQueueName: '',
-      selectedQueue: 'default',
-      notificationTitle: '',
-      notificationContent: '',
-      notificationStatic: false,
-      notificationTimeout: 5000
+      articles: []
     }
   },
   mounted(){
-    this.changeList();
+    this.getVersion();
+    this.getArticles();
   },
   computed: {
-    noteCounter: function(){
-      return this.$notifaye.count(this.selectedQueue) || 0;
+    anyArticles: function(){
+      return (this.articles.length>0) ? true:false;
     },
-    queues: function(){
-      return this.$notifaye.listQueues();
+    theme: function(){
+      return this.$store.getters.theme;
     }
   },
   methods: {
-    changeList: function(){
-      this.$emit('listchange',this.selectedQueue);
+    toHTML: function(data){
+      let el = document.createElement('div');
+      el.innerHTML = data;
+      //let parser = new DOMParser();
+      //let html = parser.parseFromString(data, 'text/html');
+      console.log(el);
+      return el;
     },
-      dessimate: function(){
-        this.$notifaye.dessimate(this.selectedQueue);
-      },
-      add_note: function(){
-        console.log(this.notificationStatic);
-        this.$notifaye.add({title:this.notificationTitle, content:this.notificationContent, timeout: this.notificationTimeout, static:this.notificationStatic}, this.selectedQueue);
-      },
-      new_queue: function(){
-        let newQueueConfig = {
-          title: this.newQueueName,
-          notificationTimeout: 5000,
-          notifications: []
-        };
-        this.$notifaye.newQueue(newQueueConfig);
-      },
-      listTheQueues: function(){
-          console.log(this.$notifaye.listQueues());
-      },
-      removeOldest: function(){
-        this.$notifaye.removeOldest(this.selectedQueue);
-      },
-      removeNewest: function(){
-        this.$notifaye.removeNewest(this.selectedQueue);
-      },
+    getVersion: function(){
+      this.$API.get('version')
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    getArticles: function(){
+      this.$API.get('articles')
+        .then((response) => {
+          console.log(response);
+          if(response[0]==true){
+            this.articles = response[1];
+          }
+          else{
+            this.articles = [];
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   }
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+@import '@/styles/main.scss';
+
   h1 {font-size: 2rem;}
+  h2 {font-size: 1.5rem;}
 
   @keyframes slide-up {
     0% {
@@ -100,6 +96,83 @@ export default {
         transform: translateY(0);
     }
 }
+
+  .article.dark {border: 1px solid lighten($dark_main_background, 1%);
+                background: darken($dark_main_background, 3%);
+                box-shadow: 1px 1px 2px 3px darken($dark_main_background, 2%);
+
+                > .content {color: darken($dark_main_text, 10%);}
+              }
+
+  .article {border: 1px solid #ffffff;
+            margin: 1rem;
+            padding: 0.5rem;
+
+            > .tags {padding: 0.5rem 0.5rem 0 0.5rem;
+                    width: 100%;
+                    position: relative;
+
+                  .tag {padding: 0.25rem 0.5rem;
+                        font-size: 0.7rem;
+                        width: auto;
+                        background-color: #3d8f94;
+                        color: #ffffff;
+                        position: relative;
+                        margin: 0 0.25rem;
+                        display: inline-block;
+                        box-shadow: 1px 1px 2px 3px darken($dark_main_background, 2%);
+                        border-radius: 0.15rem;}
+                    }
+
+            > .title {padding: 0.75rem;
+                      font-size: 1.3rem;
+                      font-weight: 500;
+                      letter-spacing: 0.05rem;}
+
+            > .creators {padding: 0rem 0.5rem 0 0.5rem;
+                    width: 100%;
+                    position: relative;
+
+                  .creator {padding: 0.25rem 0.5rem;
+                        font-size: 0.7rem;
+                        width: auto;
+                        background-color: transparent;
+                        color: #ffffff;
+                        position: relative;
+                        margin: 0 0.25rem;
+                        display: inline-block;
+
+                        .user-image {height: 1.5rem;
+                              width: 1.5rem;
+                              background-color: #333333;
+                              margin-right: 0.35rem;
+                              border-radius: 0.15rem;
+                              display: inline-block;
+                              vertical-align: middle;}
+
+                        .user-name {width: auto;
+                                  display: inline-block;
+                                  vertical-align: middle;
+                                  }
+                        }
+                      }
+
+            > .content {padding: 0.75rem;
+                        color: #333333;
+                        margin-top: 0.5rem;
+                        margin-bottom: 0.5rem;
+
+              > .code-block {width: calc(100% - 3rem);
+                            margin: 0.75rem 0rem;
+                            padding: 1rem 1.5rem;
+                            color: #71ac6e;
+                            font-size: 0.9rem;
+                            line-height: 1.5rem;
+                            background: darken($dark_main_background, 1.5%);
+                            border: 1px solid darken($dark_main_background, 10%);}
+            }
+          }
+
 
   .notification-area {position: fixed;
                       bottom: 0;

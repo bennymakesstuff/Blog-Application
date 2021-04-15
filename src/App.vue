@@ -1,45 +1,42 @@
 <template>
-  <div class="full-width center-content">
+  <div :class="['full-width', 'center-content']">
 
-    <div v-if="loggedIn" class="logged-in">
+    <div v-if="loggedIn" :class="['logged-in', theme]">
 
     </div>
 
-    <div v-if="!loggedIn" class="logged-out">
-      <h1>{{this.$store.state.app_settings.name}}</h1>
+    <div v-if="!loggedIn" :class="['logged-out', theme]">
+      <div class="header-area">
+        <h1>{{this.$store.state.app_settings.name}}</h1>
+      </div>
       <main-menu/>
-      <router-view v-on:listchange="listchange"></router-view>
+      <router-view></router-view>
     </div>
-
-<notification-area :list="notes"/>
 
   </div>
 </template>
 
 <script>
 import MainMenu from '@/views/logged-out/MainMenu.vue'
-import NotificationList from '@/notifications/components/notifayeToast.vue';
 
 export default {
   name: 'main-entry',
   components: {
-    'notification-area':NotificationList,
     'main-menu': MainMenu
   },
   data: function(){
     return {
       loggedIn: false,
-      currentList: 'default'
     }
   },
   computed: {
-    notes: function(){
-      return this.$notifaye.notes(this.selectedQueue) || null;
-    },
+    theme: function(){
+      return this.$store.getters.theme;
+    }
   },
   methods: {
-    listchange: function(data){
-      this.currentList = data;
+    setMainBodyColor: function(){
+
     }
   }
 }
@@ -48,21 +45,32 @@ export default {
 <style lang="scss">
 @import '@/styles/main.scss';
 
+.bodybg {background-color: $dark_main_background;}
+
 .full-width {
   width: 100%;
-}.center-content {
+}
+.center-content {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
+.header-area {width: 100%;
+            text-align: center;}
+
+.logged-in.dark {background-color: $dark_main_background;
+                color: $dark_main_text;}
+
 .logged-in {width: 100vw;
-            height: 100vh;
-            background-color: #9fb09d;}
+            min-height: 100vh;}
+
+.logged-out.dark {background-color: $dark_main_background;
+  color: $dark_main_text;}
 
 .logged-out {width: 100vw;
-            height: 100vh;
-            background-color: #e8b2b2;}
+            min-height: 100vh;}
+
 
 
 </style>

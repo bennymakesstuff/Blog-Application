@@ -7,3 +7,9 @@
 @use 'fonts';
 @use 'layout';
 @use 'shortcuts';
+
+
+$dark_main_text: #c5cfd6;
+$dark_main_background: #16232b;
+
+body {font-family: verdana, sans-serif;}
