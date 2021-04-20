@@ -20,10 +20,19 @@ export default new Vuex.Store({
     }
   },
   mutations: {
-
+    TOGGLE_THEME (state) {
+      if(state.app_settings.theme==='dark'){
+        state.app_settings.theme = 'light';
+      }
+      else{
+        state.app_settings.theme = 'dark';
+      }
+    }
   },
   actions: {
-
+    toggle_theme (context) {
+      context.commit('TOGGLE_THEME');
+    }
   },
   getters: {
     theme: state => {
