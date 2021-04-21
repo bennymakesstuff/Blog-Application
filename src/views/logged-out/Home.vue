@@ -51,7 +51,9 @@
         <div class="tags">
           <div v-for="(tag, tagIndex) in article.tags" class="tag" @click="showArticlesByTag(tag._id)">{{tag.title}}</div>
         </div>
-        <div class="title">{{article.title}}</div>
+        <!--<a :href="internalLink" class="title">{{article.title}}</a>-->
+        <!--<a :href="internalLink" class="title"><div class="title" @click="goToArticle">{{article.title}}</div></a>-->
+        <router-link :to="internalLink(article.link)"><div class="title">{{article.title}}</div></router-link>
         <div class="creators">
           <div v-for="(author, creatorIndex) in article.authors" class="creator" @click="showArticlesByAuthor(author._id)">
             <div class="user-image"></div>
@@ -93,6 +95,12 @@ export default {
     }
   },
   methods: {
+    internalLink: function(data){
+      return 'article/'+data;
+    },
+    goToArticle: function(data){
+
+    },
     toHTML: function(data){
       let el = document.createElement('div');
       el.innerHTML = data;
@@ -199,7 +207,9 @@ export default {
   .article.dark {border: 1px solid lighten($dark_main_background, 1%);
                 background: darken($dark_main_background, 3%);
                 box-shadow: 1px 1px 2px 3px darken($dark_main_background, 2%);
-
+                > a {
+                  > .title {color: lighten($dark_main_text, 10%);}
+                }
                 > .content {color: lighten($dark_main_text, 10%);}
                 > .tags {
                   > .tag {box-shadow: 1px 1px 2px 3px darken($dark_main_background, 2%);}
@@ -213,6 +223,7 @@ export default {
             margin: 1rem;
             font-weight: 100;
             padding: 0.5rem;
+            box-shadow: 0px 0px 2px 1px rgb(98, 103, 103, 9%);
 
             > .hero-image {width: 100%;
                           padding-bottom: 56.25%; // 16:9 Aspect Ratio
@@ -231,6 +242,8 @@ export default {
                         color: #ffffff;
                         position: relative;
                         margin: 0 0.25rem;
+                        line-height: 0.9rem;
+                        height:  0.8rem;
                         display: inline-block;
                         box-shadow: 1px 1px 1px 1px lighten($dark_main_background, 90%);
                         border-radius: 0.15rem;
@@ -241,11 +254,12 @@ export default {
                     > .tag:hover {background-color: #4dadb3;}
                     }
 
-
-            > .title {padding: 0.75rem;
-                      font-size: 1.3rem;
-                      font-weight: 500;
-                      letter-spacing: 0.05rem;}
+            > a {
+              > .title {padding: 0.75rem;
+                        font-size: 1.9rem;
+                        font-weight: 500;
+                        letter-spacing: 0.05rem;}
+                    }
 
             > .creators {padding: 0rem 0.5rem 0 0.5rem;
                     width: 100%;
@@ -285,6 +299,8 @@ export default {
                         margin-top: 0.5rem;
                         margin-bottom: 0.5rem;
                         letter-spacing: 0.02rem;
+                        color: darken($dark_main_text, 100%);
+                        font-weight: 200;
 
               > .code-block {width: calc(100% - 3rem);
                             margin: 0.75rem 0rem;

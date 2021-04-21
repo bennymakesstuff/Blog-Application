@@ -9,6 +9,7 @@ import Home from '@/views/logged-out/Home.vue'
 import Login from '@/views/logged-out/Login.vue'
 import Register from '@/views/logged-out/Register.vue'
 import Forgot from '@/views/logged-out/Forgot.vue'
+import Article from '@/views/logged-out/Article.vue'
 
 
 Vue.use(VueRouter);
@@ -34,6 +35,11 @@ const routes = [
     path: "/forgot",
     name: "forgot",
     component: Forgot
+  },
+  {
+    path: "/article/:articleId",
+    name: "article",
+    component: Article
   },
   { path: "*", component: Error404 }
 ];

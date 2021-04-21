@@ -1,7 +1,13 @@
 <template>
   <div class="full-width center-content">
-    <h1>404 Error</h1>
-    <h1>Page not found</h1>
+    <div class="inner">
+      <div class="error-code">
+        404 Error
+      </div>
+      <div class="error-description">
+        Page not found
+      </div>
+    </div>
   </div>
 </template>
 
@@ -12,11 +18,22 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.full-width {
-  width: 100%;
-}.center-content {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.full-width {width: 100%;}
+
+.center-content {
+  flex: none !important;
+
+  > .inner {min-width: 900px;
+            text-align: center;
+
+      > div {display: block;}
+          }
 }
+
+.error-code {font-size: 3rem;
+            margin: 2rem;
+            }
+
+.error-description {font-size: 1.5rem;
+                    margin: 0.5rem;}
 </style>

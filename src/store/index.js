@@ -16,7 +16,8 @@ export default new Vuex.Store({
   state: {
     app_settings: {
       name: 'BennyMakes a Blog',
-      theme: 'dark'
+      theme: 'dark',
+      server: 'http://localhost:8080/'
     }
   },
   mutations: {
